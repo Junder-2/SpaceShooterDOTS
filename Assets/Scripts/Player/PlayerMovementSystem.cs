@@ -1,5 +1,4 @@
-﻿using Generic;
-using Unity.Burst;
+﻿using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -12,7 +11,7 @@ namespace Player
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            state.RequireForUpdate<Player>();
+            state.RequireForUpdate<PlayerInfo>();
         }
         
         [BurstCompile]
@@ -20,32 +19,30 @@ namespace Player
         {
             var deltaTime = SystemAPI.Time.DeltaTime;
 
-            foreach (var (player, transform) in SystemAPI.Query<RefRW<Player>, RefRW<LocalTransform>>().WithAll<Player>())
+            foreach (var (player, transform) in SystemAPI.Query<PlayerAspect, RefRW<LocalTransform>>())
             {
-                var playerRO = player.ValueRO;
-                var moveInput = playerRO.input.movement;
+                var playerInfo = player.PlayerInfo;
+                var inputData = player.InputData;
+                var entityData = player.EntityData;
+                var physicsData = player.PhysicsData;
 
-                var velocity = playerRO.velocity;
+                var velocity = physicsData.velocity;
 
-                if (math.length(velocity) < playerRO.maxMoveSpeed)
+                if (math.length(velocity) < playerInfo.maxMoveSpeed)
                 {
-                    velocity += moveInput * (deltaTime * playerRO.accelerationSpeed);
+                    velocity += inputData.movement * (deltaTime * playerInfo.accelerationSpeed);
                 }
-                
-                float moveSignX = math.sign(velocity.x);
-                float moveSignY = math.sign(velocity.y);
 
-                velocity -= math.normalizesafe(velocity, float2.zero) * (deltaTime * playerRO.decelerationSpeed);
+                velocity -= math.normalizesafe(velocity, float2.zero) * (deltaTime * playerInfo.decelerationSpeed);
 
-                player.ValueRW.velocity = velocity;
+                physicsData.velocity = velocity;
 
                 transform.ValueRW.Position += new float3(velocity.x, velocity.y, 0) * (deltaTime);
-            }
-
-            foreach (var (player, localToWorld, faceDirection) in SystemAPI.Query<Player, LocalToWorld, RefRW<FaceDirection>>().WithAll<Player>())
-            {
-                //faceDirection.ValueRW.direction = player.input.lookDir;
-                faceDirection.ValueRW.direction = math.normalize(player.input.mouseWorldPos - localToWorld.Position).xy;
+                
+                entityData.faceDirection = math.normalizesafe(inputData.mouseWorldPos - transform.ValueRO.Position).xy;
+                
+                player.PhysicsData = physicsData;
+                player.EntityData = entityData;
             }
         }
     }

@@ -5,7 +5,7 @@ using Unity.Transforms;
 using UnityEngine;
 using Utilities;
 
-namespace Generic
+namespace Shared
 {
     [RequireMatchingQueriesForUpdate]
     [UpdateInGroup(typeof(LateSimulationSystemGroup))]
@@ -26,15 +26,16 @@ namespace Generic
             }.ScheduleParallel();
         }
     }
-
+    
+    [BurstCompile]
     public partial struct RotateTowardsJob : IJobEntity
     {
         public float deltaTime;
 
-        public void Execute(FaceDirection faceDirection, ref LocalTransform transform)
+        public void Execute(RotateFacingAspect rotateFacingAspect, ref LocalTransform transform)
         {
-            var target = faceDirection.direction;
-            var speed = faceDirection.rotateSpeed;
+            var target = rotateFacingAspect.FaceDirection;
+            var speed = rotateFacingAspect.RotateSpeed;
             
             if(target.Equals(float2.zero)) return;
 
@@ -48,10 +49,18 @@ namespace Generic
             transform.Rotation = quaternion.RotateZ(DOTSMath.MoveTowardsRadians(currentAngle, targetAngle, speed * deltaTime * tau));
         }
     }
-
+    
     public struct FaceDirection : IComponentData
     {
-        public float2 direction;
         public float rotateSpeed;
+    }
+
+    public readonly partial struct RotateFacingAspect : IAspect
+    {
+        private readonly RefRO<FaceDirection> faceDirection;
+        private readonly RefRO<EntityData> entityInfo;
+
+        public float2 FaceDirection => entityInfo.ValueRO.faceDirection;
+        public float RotateSpeed => faceDirection.ValueRO.rotateSpeed;
     }
 }
