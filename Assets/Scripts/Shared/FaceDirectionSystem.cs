@@ -58,9 +58,9 @@ namespace Shared
     public readonly partial struct RotateFacingAspect : IAspect
     {
         private readonly RefRO<FaceDirection> faceDirection;
-        private readonly RefRO<EntityData> entityInfo;
+        private readonly RefRO<PhysicsBody> physicsBody;
 
-        public float2 FaceDirection => entityInfo.ValueRO.faceDirection;
+        public float2 FaceDirection => physicsBody.ValueRO.faceDirection;
         public float RotateSpeed => faceDirection.ValueRO.rotateSpeed;
     }
 }

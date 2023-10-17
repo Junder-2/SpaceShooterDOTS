@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6257399059997580624}
   - component: {fileID: 657181857981827363}
   m_Layer: 0
-  m_Name: PlayerTest
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 19146b5e44cc1b842b82b485b16912b8, type: 2}
+  - {fileID: 2100000, guid: 5811ac1863d7d12499f43dead25ba199, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -6972313667730330579, guid: 8e47fefc12d059449b96ff85ce2914e6, type: 3}
+  m_Sprite: {fileID: -8937488907618884742, guid: 8e47fefc12d059449b96ff85ce2914e6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -124,10 +124,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4963682508333585656}
-  - component: {fileID: 2161291059507432514}
+  - component: {fileID: 3268423465855556817}
   - component: {fileID: 5930866824927631761}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -150,7 +150,7 @@ Transform:
   - {fileID: 4019999781159019856}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2161291059507432514
+--- !u!114 &3268423465855556817
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -159,16 +159,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 7613159338629285646}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02b464d1554d5a14795b3e5dad23dd3b, type: 3}
+  m_Script: {fileID: 11500000, guid: cafc55af5650484ca2ad2d7192bb3ff5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  softMaxSpeed: 7
-  hardMaxSpeed: 15
-  accelerationSpeed: 12
-  decelerationSpeed: 3
-  rotateSpeed: 2
-  fireDelay: 0.05
-  projectilePrefab: {fileID: 3724000985595306511, guid: b15c6df798fa8fe4681ccfc09827d2aa, type: 3}
+  softMaxSpeed: 4
+  hardMaxSpeed: 6
+  accelerationSpeed: 5
+  decelerationSpeed: 2
+  rotateSpeed: 1
+  fireDelay: 0.3
+  projectilePrefab: {fileID: 3724000985595306511, guid: 0bff5ebfc3e487b4cb895011dbe14843, type: 3}
   projectileSpawn: {fileID: 4019999781159019856}
 --- !u!58 &5930866824927631761
 CircleCollider2D:

@@ -11,6 +11,7 @@ namespace Player
         private InputActions inputActions;
         private Vector2 moveInput;
         private Vector2 lookInput;
+        private bool fireInput;
         
         protected override void OnCreate()
         {
@@ -36,19 +37,20 @@ namespace Player
 
             PlayerInput masterInput = new PlayerInput
             {
-                lookDir = lookInput, movement = moveInput, mousePos = mousePos, mouseWorldPos = mouseWorld
+                fire = fireInput, lookDir = lookInput, movement = moveInput, mousePos = mousePos, mouseWorldPos = mouseWorld
             };
 
-            Entities.ForEach((ref PlayerInput playerInput) =>
-                {
-                    playerInput.movement = masterInput.movement;
-                    playerInput.lookDir = masterInput.lookDir;
-                    playerInput.mousePos = masterInput.mousePos;
-                    playerInput.mouseWorldPos = masterInput.mouseWorldPos;
-                }).ScheduleParallel();
+            Entities.ForEach((ref PlayerInput playerInput) => {
+                playerInput.fire = masterInput.fire;
+                playerInput.movement = masterInput.movement;
+                playerInput.lookDir = masterInput.lookDir;
+                playerInput.mousePos = masterInput.mousePos;
+                playerInput.mouseWorldPos = masterInput.mouseWorldPos;
+            }).ScheduleParallel();
         }
     
         public void OnMove(InputAction.CallbackContext context) => moveInput = context.ReadValue<Vector2>();
         public void OnLook(InputAction.CallbackContext context) => lookInput = context.ReadValue<Vector2>();
+        public void OnFire(InputAction.CallbackContext context) => fireInput = context.ReadValueAsButton();
     }
 }

@@ -1,13 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using Shared;
+﻿using Shared;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-namespace Player
+namespace Enemy
 {
-    public class PlayerAuthoring : MonoBehaviour
+    public class EnemyAuthoring : MonoBehaviour
     {
         [SerializeField] private float softMaxSpeed = 2f;
         [SerializeField] private float hardMaxSpeed = 3f;
@@ -20,13 +19,12 @@ namespace Player
         [SerializeField] private GameObject projectilePrefab;
         [SerializeField] private Transform projectileSpawn;
 
-        class Baker : Baker<PlayerAuthoring>
+        class Baker : Baker<EnemyAuthoring>
         {
-            public override void Bake(PlayerAuthoring authoring)
+            public override void Bake(EnemyAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
-                AddComponent(entity, new PlayerInfo());
-                AddComponent(entity, new PlayerInput());
+                AddComponent(entity, new EnemyInfo());
                 AddComponent(entity, new PhysicsBody());
                 AddComponent(entity, new MovePhysicsBody
                 {
@@ -39,10 +37,15 @@ namespace Player
                 {
                     rotateSpeed = authoring.rotateSpeed,
                 });
+                AddComponent(entity, new Avoidance
+                {
+                    pushForce = 4f,
+                    pushRadius = 2f,
+                });
 
                 AddComponent(entity, new Shooting
                 {
-                    fireDelayTimer = 0,
+                    fireDelayTimer = Random.Range(0, authoring.fireDelay),
                     fireDelayDuration = authoring.fireDelay,
 
                     projectilePrefab = GetEntity(authoring.projectilePrefab, TransformUsageFlags.Dynamic),
@@ -51,28 +54,27 @@ namespace Player
             }
         }
     }
-
-    public struct PlayerInfo : IComponentData
-    {
-        
-    }
-
-    public struct PlayerInput : IComponentData
-    {
-        public bool fire;
-        public float2 movement;
-        public float2 lookDir;
-        public float2 mousePos;
-        public float3 mouseWorldPos;
-    }
     
-    public readonly partial struct PlayerAspect : IAspect
+    public struct EnemyInfo : IComponentData
     {
-        private readonly RefRO<PlayerInfo> playerInfo;
-        private readonly RefRO<PlayerInput> playerInput;
-        public readonly PhysicsBodyAspect physicsBodyAspect;
+        public float2 targetPosition;
+    }
 
-        public PlayerInfo PlayerInfo => playerInfo.ValueRO;
-        public PlayerInput InputData => playerInput.ValueRO;
+    public readonly partial struct EnemyAspect : IAspect
+    {
+        private readonly RefRW<EnemyInfo> enemyInfo;
+        public readonly PhysicsBodyAspect physicsBodyAspect;
+        
+        public EnemyInfo EnemyInfo
+        {
+            get => enemyInfo.ValueRO;
+            set => enemyInfo.ValueRW = value;
+        }
+
+        public float2 TargetPosition
+        {
+            get => enemyInfo.ValueRO.targetPosition;
+            set => enemyInfo.ValueRW.targetPosition = value;
+        }
     }
 }
