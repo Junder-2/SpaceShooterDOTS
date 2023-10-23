@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9189689738596485588}
   - component: {fileID: 7078357548868835717}
-  - component: {fileID: 1156963045312057174}
+  - component: {fileID: 4858752411383933657}
+  - component: {fileID: 7393689294169305215}
   m_Layer: 0
   m_Name: PlayerProjectile
   m_TagString: Untagged
@@ -46,45 +47,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f695fd15f94124bc8734e18edaffa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectileInitialForce: 8
   projectileMaxSpeed: 8
   projectileAcceleration: 80
   projectileDeceleration: 1
   projectileDamage: 1
---- !u!58 &1156963045312057174
-CircleCollider2D:
+--- !u!114 &4858752411383933657
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3724000985595306511}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.14
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f7a51fabd948f89934a946fed6519a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionLayer: 6
+  size: {x: 0.25, y: 0.25}
+  offset: {x: 0, y: 0}
+  raiseCollisionEvents: 0
+  raiseTriggerEvents: 1
+--- !u!114 &7393689294169305215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3724000985595306511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2345bc70e6042f9a07630989da2f59a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  includeLayers: 18
+  rejectLayers: 12
 --- !u!1 &4291984192890423405
 GameObject:
   m_ObjectHideFlags: 0

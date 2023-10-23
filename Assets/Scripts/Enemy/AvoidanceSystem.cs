@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using PhysicsBodyAspect = Shared.Physics.PhysicsBodyAspect;
 using Random = Unity.Mathematics.Random;
 
 namespace Enemy

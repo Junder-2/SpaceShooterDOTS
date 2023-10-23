@@ -125,7 +125,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4963682508333585656}
   - component: {fileID: 3268423465855556817}
-  - component: {fileID: 5930866824927631761}
+  - component: {fileID: 6277536192356289154}
+  - component: {fileID: 2908435830726848462}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -170,38 +171,34 @@ MonoBehaviour:
   fireDelay: 0.3
   projectilePrefab: {fileID: 3724000985595306511, guid: 0bff5ebfc3e487b4cb895011dbe14843, type: 3}
   projectileSpawn: {fileID: 4019999781159019856}
---- !u!58 &5930866824927631761
-CircleCollider2D:
+--- !u!114 &6277536192356289154
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7613159338629285646}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.33
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f7a51fabd948f89934a946fed6519a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionLayer: 10
+  size: {x: 0.5, y: 0.5}
+  offset: {x: 0, y: 0}
+  raiseCollisionEvents: 1
+  raiseTriggerEvents: 0
+--- !u!114 &2908435830726848462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7613159338629285646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2345bc70e6042f9a07630989da2f59a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  includeLayers: 2
+  rejectLayers: 0

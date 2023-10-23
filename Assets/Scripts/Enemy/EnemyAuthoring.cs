@@ -1,7 +1,9 @@
 ﻿using Shared;
+using Shared.Physics;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using PhysicsBodyAspect = Shared.Physics.PhysicsBodyAspect;
 using Random = UnityEngine.Random;
 
 namespace Enemy

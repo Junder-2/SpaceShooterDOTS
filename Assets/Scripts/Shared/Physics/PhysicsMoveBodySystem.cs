@@ -3,10 +3,10 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-namespace Shared
+namespace Shared.Physics
 {
     [RequireMatchingQueriesForUpdate]
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial struct PhysicsMoveBodySystem : ISystem
     {
         [BurstCompile]
@@ -38,6 +38,9 @@ namespace Shared
 
             var magnitude = math.length(velocity);
 
+            velocity += moveBody.ForwardImpulseForce * moveInput;
+            moveBody.ForwardImpulseForce = 0;
+
             if (moveInfo.softMaxSpeed != 0 && magnitude < moveInfo.softMaxSpeed)
             {
                 velocity += moveInput * (deltaTime * moveInfo.accelerationSpeed);
@@ -57,6 +60,7 @@ namespace Shared
 
     public struct MovePhysicsBody : IComponentData, IEnableableComponent
     {
+        public float forwardImpulseForce;
         public float softMaxSpeed;
         public float hardMaxSpeed;
         public float accelerationSpeed;
@@ -66,8 +70,14 @@ namespace Shared
     public readonly partial struct PhysicsMoveBodyAspect : IAspect
     {
         public readonly PhysicsBodyAspect physicBodyAspect;
-        private readonly RefRO<MovePhysicsBody> movePhysicsBody;
+        private readonly RefRW<MovePhysicsBody> movePhysicsBody;
 
         public MovePhysicsBody MovePhysicsBody => movePhysicsBody.ValueRO;
+
+        public float ForwardImpulseForce
+        {
+            get => movePhysicsBody.ValueRO.forwardImpulseForce;
+            set => movePhysicsBody.ValueRW.forwardImpulseForce = value;
+        }
     }
 }

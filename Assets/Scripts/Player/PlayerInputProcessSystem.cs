@@ -26,7 +26,7 @@ namespace Player
                 
                 player.physicsBodyAspect.FaceDirection = math.normalizesafe(inputData.mouseWorldPos - localToWorld.Position).xy;
                 player.physicsBodyAspect.MoveVector = inputData.movement;
-
+                
                 shooting.ValueRW = inputData.fire;
             }
         }

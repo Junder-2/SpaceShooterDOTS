@@ -1,4 +1,5 @@
-﻿using Unity.Burst;
+﻿using Shared.Physics;
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -45,7 +46,6 @@ namespace Shared
 
     public struct Projectile : IComponentData
     {
-        public float damage;
         public float lifeTimeDuration;
         public float lifeTimer;
     }

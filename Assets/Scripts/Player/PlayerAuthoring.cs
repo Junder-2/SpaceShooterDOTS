@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using Shared;
+using Shared.Physics;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using PhysicsBodyAspect = Shared.Physics.PhysicsBodyAspect;
 
 namespace Player
 {
