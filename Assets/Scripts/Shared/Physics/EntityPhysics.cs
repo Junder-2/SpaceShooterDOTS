@@ -10,7 +10,8 @@ namespace Shared.Physics
         public const byte DefaultLayer = 1 << 1;
         public const byte PlayerLayer = 1 << 2;
         public const byte EnemyLayer = 1 << 3;
-        public const byte BoundaryLayer = 1 << 4;
+        public const byte ProjectileLayer = 1 << 4;
+        public const byte BoundaryLayer = 1 << 5;
         
         [Flags]
         public enum LayerMask : byte
@@ -19,6 +20,7 @@ namespace Shared.Physics
             Default = DefaultLayer,
             Player = PlayerLayer,
             Enemy = EnemyLayer,
+            Projectile = ProjectileLayer,
             Boundary = BoundaryLayer,
         }
         
@@ -125,6 +127,21 @@ namespace Shared.Physics
             if (py <= 0) return false;
 
             return true;
+        }
+
+        public bool CheckInverseCollision(float4 otherWorldBounds)
+        {
+            var bounds = GetWorldBounds();
+
+            var dx = otherWorldBounds.x - bounds.x;
+            var px = (otherWorldBounds.z - bounds.z) - math.abs(dx);
+            if (px <= 0) return true;
+
+            var dy = otherWorldBounds.y - bounds.y;
+            var py = (otherWorldBounds.w - bounds.w) - math.abs(dy);
+            if (py <= 0) return true;
+
+            return false;
         }
     }
 }

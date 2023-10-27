@@ -10,6 +10,7 @@ namespace Enemy
 {
     public class EnemyAuthoring : MonoBehaviour
     {
+        [SerializeField] private float maxHealth = 1f;
         [SerializeField] private float softMaxSpeed = 2f;
         [SerializeField] private float hardMaxSpeed = 3f;
         [SerializeField] private float accelerationSpeed = 10f;
@@ -21,12 +22,14 @@ namespace Enemy
         [SerializeField] private GameObject projectilePrefab;
         [SerializeField] private Transform projectileSpawn;
 
-        class Baker : Baker<EnemyAuthoring>
+        public class Baker : Baker<EnemyAuthoring>
         {
             public override void Bake(EnemyAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
+                
                 AddComponent(entity, new EnemyInfo());
+                AddComponent(entity, new Alive());
                 AddComponent(entity, new PhysicsBody());
                 AddComponent(entity, new MovePhysicsBody
                 {
@@ -44,14 +47,22 @@ namespace Enemy
                     pushForce = 4f,
                     pushRadius = 2f,
                 });
-
-                AddComponent(entity, new Shooting
+                if (authoring.projectilePrefab != null)
                 {
-                    fireDelayTimer = Random.Range(0, authoring.fireDelay),
-                    fireDelayDuration = authoring.fireDelay,
+                    AddComponent(entity, new Shooting
+                    {
+                        fireDelayTimer = Random.Range(0, authoring.fireDelay),
+                        fireDelayDuration = authoring.fireDelay,
 
-                    projectilePrefab = GetEntity(authoring.projectilePrefab, TransformUsageFlags.Dynamic),
-                    projectileSpawn = GetEntity(authoring.projectileSpawn, TransformUsageFlags.Dynamic),
+                        projectilePrefab = GetEntity(authoring.projectilePrefab, TransformUsageFlags.Dynamic),
+                        projectileSpawn = GetEntity(authoring.projectileSpawn, TransformUsageFlags.Dynamic),
+                    });
+                }
+                AddComponent(entity, new Health
+                {
+                    autoDestroy = true,
+                    currentHealth = authoring.maxHealth,
+                    maxHealth = authoring.maxHealth,
                 });
             }
         }
@@ -66,7 +77,7 @@ namespace Enemy
     {
         private readonly RefRW<EnemyInfo> enemyInfo;
         public readonly PhysicsBodyAspect physicsBodyAspect;
-        
+
         public EnemyInfo EnemyInfo
         {
             get => enemyInfo.ValueRO;

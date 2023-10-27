@@ -21,7 +21,7 @@ namespace Shared.Physics
             foreach (var (collisionEvent, entity) 
                      in SystemAPI.Query<CollisionEvent>().WithDisabled<CollisionEvent>().WithAll<DestroyOnCollision>().WithEntityAccess())
             {
-                entityCommandBuffer.DestroyEntity(entity);
+                entityCommandBuffer.SetComponentEnabled<Alive>(entity, false);
             }
         }
     }

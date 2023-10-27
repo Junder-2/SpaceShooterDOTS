@@ -8,6 +8,9 @@ using Unity.Transforms;
 
 namespace Enemy
 {
+    [RequireMatchingQueriesForUpdate]
+    [UpdateAfter(typeof(PlayerProcessSystem))]
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
     public partial struct EnemyProcessSystem : ISystem
     {
         [BurstCompile]
@@ -28,9 +31,9 @@ namespace Enemy
                 playerPos = playerTransform.Position.xy;
             }
 
-            foreach (var (enemy, shooting, localToWorld, entity) 
-                     in SystemAPI.Query<EnemyAspect, EnabledRefRW<Shooting>, LocalToWorld>().
-                         WithOptions(EntityQueryOptions.IgnoreComponentEnabledState).WithEntityAccess())
+            foreach (var (enemy, localToWorld, entity) 
+                     in SystemAPI.Query<EnemyAspect, LocalToWorld>().
+                         WithOptions(EntityQueryOptions.IgnoreComponentEnabledState).WithEntityAccess().WithAll<EnemyInfo>())
             {
                 enemy.TargetPosition = playerPos;
                 
@@ -38,8 +41,11 @@ namespace Enemy
 
                 enemy.physicsBodyAspect.FaceDirection = targetDir;
                 enemy.physicsBodyAspect.MoveVector = targetDir;
-                
-                shooting.ValueRW = Random.CreateFromIndex((uint)(entity.Index + (time*.5f))).NextBool();
+
+                if (state.EntityManager.HasComponent<Shooting>(entity))
+                {
+                    state.EntityManager.SetComponentEnabled<Shooting>(entity, Random.CreateFromIndex((uint)(entity.Index + (time*.5f))).NextBool());
+                }
             }
         }
     }

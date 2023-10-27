@@ -22,6 +22,8 @@ namespace Shared.Physics
             {
                 deltaTime = SystemAPI.Time.DeltaTime
             }.ScheduleParallel();
+            
+            state.CompleteDependency();
         }
     }
     

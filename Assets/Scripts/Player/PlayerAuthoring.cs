@@ -11,6 +11,7 @@ namespace Player
 {
     public class PlayerAuthoring : MonoBehaviour
     {
+        [SerializeField] private float maxHealth = 3f;
         [SerializeField] private float softMaxSpeed = 2f;
         [SerializeField] private float hardMaxSpeed = 3f;
         [SerializeField] private float accelerationSpeed = 10f;
@@ -29,6 +30,7 @@ namespace Player
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity, new PlayerInfo());
                 AddComponent(entity, new PlayerInput());
+                AddComponent(entity, new Alive());
                 AddComponent(entity, new PhysicsBody());
                 AddComponent(entity, new MovePhysicsBody
                 {
@@ -49,6 +51,12 @@ namespace Player
 
                     projectilePrefab = GetEntity(authoring.projectilePrefab, TransformUsageFlags.Dynamic),
                     projectileSpawn = GetEntity(authoring.projectileSpawn, TransformUsageFlags.Dynamic),
+                });
+                AddComponent(entity, new Health
+                {
+                    autoDestroy = false,
+                    currentHealth = authoring.maxHealth,
+                    maxHealth = authoring.maxHealth,
                 });
             }
         }
@@ -72,9 +80,12 @@ namespace Player
     {
         private readonly RefRO<PlayerInfo> playerInfo;
         private readonly RefRO<PlayerInput> playerInput;
+        private readonly RefRO<Health> health;
         public readonly PhysicsBodyAspect physicsBodyAspect;
 
-        public PlayerInfo PlayerInfo => playerInfo.ValueRO;
-        public PlayerInput InputData => playerInput.ValueRO;
+        public PlayerInfo GetPlayerInfo() => playerInfo.ValueRO;
+        public PlayerInput GetInputData() => playerInput.ValueRO;
+
+        public Health GetHealth() => health.ValueRO;
     }
 }

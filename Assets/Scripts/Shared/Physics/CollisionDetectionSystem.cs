@@ -16,24 +16,22 @@ namespace Shared.Physics
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
+            var entityManager = state.EntityManager;
+            
             foreach (var (collisionEvent, collider, entity) 
                      in SystemAPI.Query<RefRW<CollisionEvent>, BoxColliderAspect>().WithDisabled<CollisionEvent>().WithEntityAccess())
             {
-                if (!collisionEvent.ValueRO.isBoundary)
+                if (entityManager.HasComponent<BoxCollider>(collisionEvent.ValueRO.collidedEntity))
                 {
                     var otherCollider = SystemAPI.GetAspect<BoxColliderAspect>(collisionEvent.ValueRO.collidedEntity);
                     var otherWorldBounds = otherCollider.GetWorldBounds();
 
                     if (collider.CheckCollision(otherWorldBounds)) continue;
+                }
                 
-                    collisionEvent.ValueRW.isBoundary = false;
-                    state.EntityManager.SetComponentEnabled<CollisionEvent>(entity, true);
-                }
-                else
-                {
-                    collisionEvent.ValueRW.isBoundary = false;
-                    state.EntityManager.SetComponentEnabled<CollisionEvent>(entity, true);
-                }
+                collisionEvent.ValueRW.isBoundary = false;
+                collisionEvent.ValueRW.collidedEntity = Entity.Null;
+                entityManager.SetComponentEnabled<CollisionEvent>(entity, true);
             }
             
             foreach (var (collisionEvent, collider, entity)
@@ -44,10 +42,11 @@ namespace Shared.Physics
                 if (SystemAPI.TryGetSingleton(out Boundary boundary))
                 {
                     if (collisionMask.CheckLayer(boundary.collisionLayer) &&
-                        !collider.CheckCollision(boundary.boundingRect))
+                        collider.CheckInverseCollision(boundary.boundingRect))
                     {
                         collisionEvent.ValueRW.isBoundary = true;
-                        state.EntityManager.SetComponentEnabled<CollisionEvent>(entity, false);
+                        collisionEvent.ValueRW.collidedEntity = Entity.Null;
+                        entityManager.SetComponentEnabled<CollisionEvent>(entity, false);
                         continue;
                     }
                 }
@@ -66,7 +65,7 @@ namespace Shared.Physics
 
                     collisionEvent.ValueRW.collidedEntity = otherEntity;
                     collisionEvent.ValueRW.isBoundary = false;
-                    state.EntityManager.SetComponentEnabled<CollisionEvent>(entity, false);
+                    entityManager.SetComponentEnabled<CollisionEvent>(entity, false);
                     break;
                 }
             }

@@ -15,21 +15,23 @@ namespace Shared.Physics
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
-            var entityCommandBuffer = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
+            var entityManager = state.EntityManager;
             
-            foreach (var (triggerEvent, collider, entity) 
+            foreach (var (triggerEvent, collider, entity)
                      in SystemAPI.Query<RefRW<TriggerEvent>, BoxColliderAspect>().WithDisabled<TriggerEvent>().WithEntityAccess())
             {
-                var otherCollider = SystemAPI.GetAspect<BoxColliderAspect>(triggerEvent.ValueRO.collidedEntity);
-                var otherWorldBounds = otherCollider.GetWorldBounds();
+                if (entityManager.HasComponent<BoxCollider>(triggerEvent.ValueRO.collidedEntity))
+                {
+                    var otherCollider = SystemAPI.GetAspect<BoxColliderAspect>(triggerEvent.ValueRO.collidedEntity);
+                    var otherWorldBounds = otherCollider.GetWorldBounds();
 
-                if (collider.CheckCollision(otherWorldBounds)) continue;
-                
+                    if (collider.CheckCollision(otherWorldBounds)) continue;
+                }
+
                 triggerEvent.ValueRW.collidedEntity = Entity.Null;
-                entityCommandBuffer.SetComponentEnabled<TriggerEvent>(entity, true);
+                entityManager.SetComponentEnabled<TriggerEvent>(entity, true);
             }
-            
+
             foreach (var (triggerEvent, collider, entity) 
                      in SystemAPI.Query<RefRW<TriggerEvent>, BoxColliderAspect>().WithEntityAccess())
             {
@@ -46,7 +48,7 @@ namespace Shared.Physics
                     if (!collider.CheckCollision(otherCollider.GetWorldBounds())) continue;
 
                     triggerEvent.ValueRW.collidedEntity = otherEntity;
-                    entityCommandBuffer.SetComponentEnabled<TriggerEvent>(entity, false);
+                    entityManager.SetComponentEnabled<TriggerEvent>(entity, false);
                 }
             }
         }

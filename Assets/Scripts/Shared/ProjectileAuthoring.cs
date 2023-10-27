@@ -10,7 +10,6 @@ namespace Shared
         [SerializeField] private float projectileMaxSpeed = 10;
         [SerializeField] private float projectileAcceleration = 20;
         [SerializeField] private float projectileDeceleration = 2;
-        [SerializeField] private float projectileDamage = 1;
 
         class Baker : Baker<ProjectileAuthoring>
         {
@@ -23,6 +22,7 @@ namespace Shared
                     lifeTimer = 0,
                     lifeTimeDuration = 5f
                 });
+                AddComponent(entity, new Alive());
                 AddComponent(entity, new PhysicsBody());
                 AddComponent(entity, new MovePhysicsBody
                 {
@@ -32,7 +32,6 @@ namespace Shared
                     decelerationSpeed = authoring.projectileDeceleration
                 });
                 AddComponent(entity, new DestroyOnCollision());
-                
             }
         }
     }

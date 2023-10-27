@@ -6,6 +6,7 @@ using Unity.Transforms;
 
 namespace Shared
 {
+    [UpdateInGroup(typeof(PresentationSystemGroup))]
     public partial struct ProjectileSystem : ISystem
     {
         [BurstCompile]
@@ -39,7 +40,7 @@ namespace Shared
 
             if (projectileAspect.LifeTimer > projectileAspect.Projectile.lifeTimeDuration)
             {
-                entityCommandBuffer.DestroyEntity(entity);
+                entityCommandBuffer.SetComponentEnabled<Alive>(entity, false);
             }
         }
     }

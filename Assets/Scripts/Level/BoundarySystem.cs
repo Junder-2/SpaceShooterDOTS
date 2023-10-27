@@ -32,23 +32,14 @@ namespace Level
 
                 var pos = transform.ValueRO.Position;
 
-                var clampX = bounds.x + bounds.z + otherBounds.x + otherBounds.z;
-                var clampY = bounds.y + bounds.w + otherBounds.y + otherBounds.w;
+                var clampX = bounds.x + bounds.z + otherBounds.x;
+                var clampY = bounds.y + bounds.w + otherBounds.y;
 
-                pos.x = math.clamp(pos.x, -clampX, clampX);
-                pos.y = math.clamp(pos.y, -clampY, clampY);
+                pos.x = math.clamp(pos.x, -clampX + otherBounds.z, clampX - otherBounds.z);
+                pos.y = math.clamp(pos.y, -clampY + otherBounds.w, clampY - otherBounds.w);
 
                 transform.ValueRW.Position = pos;
             }
         }
-    }
-    
-    public struct Boundary : IComponentData
-    {
-        /// <summary>
-        /// xy = offset, zw = halfWidth
-        /// </summary>
-        public float4 boundingRect;
-        public byte collisionLayer;
     }
 }

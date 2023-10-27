@@ -1,4 +1,5 @@
-﻿using Shared;
+﻿using System;
+using Shared;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -8,7 +9,7 @@ namespace Player
 {
     [UpdateAfter(typeof(InputGatheringSystem))]
     [UpdateInGroup(typeof(InitializationSystemGroup))]
-    public partial struct PlayerInputProcessSystem : ISystem
+    public partial struct PlayerProcessSystem : ISystem
     {
         [BurstCompile]
         public void OnCreate(ref SystemState state)
@@ -22,7 +23,7 @@ namespace Player
             foreach (var (player, shooting, localToWorld) 
                      in SystemAPI.Query<PlayerAspect, EnabledRefRW<Shooting>, LocalToWorld>().WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
-                var inputData = player.InputData;
+                var inputData = player.GetInputData();
                 
                 player.physicsBodyAspect.FaceDirection = math.normalizesafe(inputData.mouseWorldPos - localToWorld.Position).xy;
                 player.physicsBodyAspect.MoveVector = inputData.movement;

@@ -20,7 +20,7 @@ namespace Shared
             var deltaTime = SystemAPI.Time.DeltaTime;
             
             foreach (var shooting in 
-                     SystemAPI.Query<ShootingAspect>().WithAll<Shooting>()) //add velocity from parent body
+                     SystemAPI.Query<ShootingAspect>().WithAll<Shooting>())
             {
                 var shootingRO = shooting.Shooting;
 
