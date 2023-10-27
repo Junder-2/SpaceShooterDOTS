@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 7078357548868835717}
   - component: {fileID: 4858752411383933657}
   - component: {fileID: 7393689294169305215}
+  - component: {fileID: -4817726959497973900}
+  - component: {fileID: 2787372658166191231}
   m_Layer: 0
   m_Name: PlayerProjectile
   m_TagString: Untagged
@@ -51,7 +53,6 @@ MonoBehaviour:
   projectileMaxSpeed: 8
   projectileAcceleration: 80
   projectileDeceleration: 1
-  projectileDamage: 1
 --- !u!114 &4858752411383933657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,7 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3f7a51fabd948f89934a946fed6519a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionLayer: 6
+  collisionLayer: 20
   size: {x: 0.25, y: 0.25}
   offset: {x: 0, y: 0}
   raiseCollisionEvents: 0
@@ -81,8 +82,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2345bc70e6042f9a07630989da2f59a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  includeLayers: 18
+  includeLayers: 2
   rejectLayers: 12
+--- !u!114 &-4817726959497973900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3724000985595306511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f07f9197d72c49318c9e036f3990392f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoDestroy: 1
+  damage: 1
+--- !u!114 &2787372658166191231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3724000985595306511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16549610bfe4458aa9389201d072bb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4291984192890423405
 GameObject:
   m_ObjectHideFlags: 0
