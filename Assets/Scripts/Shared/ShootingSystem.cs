@@ -4,6 +4,10 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
+/*  Profiler 31.10 Tested 200 enemies
+ *  Low: .091ms High: .168ms
+ */
+
 namespace Shared
 {
     public partial struct ShootingSystem : ISystem

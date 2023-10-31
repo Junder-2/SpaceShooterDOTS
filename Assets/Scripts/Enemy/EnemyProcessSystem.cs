@@ -1,10 +1,13 @@
 ﻿using Player;
 using Shared;
 using Unity.Burst;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+
+/*  Profiler 31.10 Tested 200 enemies
+ *  Low: .013ms High: .034ms
+ */
 
 namespace Enemy
 {

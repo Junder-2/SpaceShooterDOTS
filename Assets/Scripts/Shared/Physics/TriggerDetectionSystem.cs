@@ -1,6 +1,10 @@
 ﻿using Unity.Burst;
 using Unity.Entities;
 
+/*  Profiler 31.10 Tested 200 enemies
+ *  Low: .175ms High: .975ms few spikes
+ */
+
 namespace Shared.Physics
 {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
