@@ -2,25 +2,19 @@
 
 namespace Level
 {
+    [DefaultExecutionOrder(-1)]
     public class LevelManager : MonoBehaviour
     {
-        public static LevelManager instance;
-        
-        [SerializeField] private Vector2 boundarySize;
-        [SerializeField] private Vector2 boundaryOffset;
+        private static LevelManager instance;
+
+        public static LevelManager Instance
+        {
+            get { return instance ??= FindObjectOfType<LevelManager>(); }
+        }
 
         private void Awake()
         {
             instance = this;
-        }
-
-        public Vector2 GetBoundarySize() => boundarySize;
-        public Vector2 GetBoundaryOffset() => boundaryOffset;
-        
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position + (Vector3)boundaryOffset, boundarySize);
         }
     }
 }

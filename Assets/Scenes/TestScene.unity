@@ -306,8 +306,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3536aab5f874b0ab2ee9b80fad59919, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boundarySize: {x: 35, y: 19}
-  boundaryOffset: {x: 0, y: 0}
 --- !u!4 &791342949
 Transform:
   m_ObjectHideFlags: 0
@@ -336,18 +334,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingDifficulty: 1
-  startingEnemies: 8
+  startingEnemies: 12
   difficultyIncreasePerWave: 1
-  enemiesPerWave: 3
-  timeBetweenEnemyWaves: 5
-  enemySpawnRadius: 5
-  enemyPrefabs:
-  - prefab: {fileID: 7613159338629285646, guid: c6d4d13ab2cf62148a46ba14d7dd368f, type: 3}
-    requiredDifficulty: 0
-  - prefab: {fileID: 7613159338629285646, guid: 166d7456084da11448818590b0f7db4e, type: 3}
-    requiredDifficulty: 0
-  - prefab: {fileID: 7613159338629285646, guid: f3fb45109f3cb21489965d72b7f62f11, type: 3}
-    requiredDifficulty: 0
+  enemiesPerWave: 10
+  timeBetweenEnemyWaves: 2
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,6 +564,50 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1631881351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1631881353}
+  - component: {fileID: 1631881352}
+  m_Layer: 0
+  m_Name: Debug
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1631881352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631881351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26079de8fbfe42a2bb136531b0219adf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1631881353
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631881351}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1643050030
 GameObject:
   m_ObjectHideFlags: 0
@@ -899,3 +933,4 @@ SceneRoots:
   - {fileID: 1919701774}
   - {fileID: 95021556}
   - {fileID: 791342949}
+  - {fileID: 1631881353}

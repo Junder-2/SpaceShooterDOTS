@@ -1,50 +1,54 @@
 ﻿using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Level
 {
-    public partial struct EnemySpawnerSystem : ISystem
+    public partial class EnemySpawnerSystem : SystemBase
     {
+        public int currentDifficulty;
+        public int spawnAmount;
+
         private EntityQuery spawnerQuery;
         
-        [BurstCompile]
-        public void OnCreate(ref SystemState state)
+        protected override void OnCreate()
         {
-            state.RequireForUpdate<EnemySpawner>();
+            RequireForUpdate<EnemySpawner>();
+            spawnerQuery = GetEntityQuery(ComponentType.ReadOnly<EnemySpawner>());
         }
-
-        [BurstCompile]
-        public void OnUpdate(ref SystemState state)
+        
+        protected override void OnUpdate()
         {
-            var prefabBuffer = SystemAPI.GetSingletonBuffer<EntityBufferElement>();
+            if(spawnAmount <= 0) return;
             
             var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
-            var entityCommandBuffer = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
+            var entityCommandBuffer = ecbSingleton.CreateCommandBuffer(World.Unmanaged);
 
-            foreach (var (enemySpawner, entity) in SystemAPI.Query<RefRW<EnemySpawner>>().WithEntityAccess())
+            var random = new Random(1);
+
+            var enemySpawners = spawnerQuery.ToComponentArray<EnemySpawner>();
+
+            for (int i = 0; i < spawnAmount; i++)
             {
-                Random random = new Random(1);
-                
-                var enemySpawnerRO = enemySpawner.ValueRO;
+                var index = random.NextInt(enemySpawners.Length);
 
-                for (int enemyIndex = 0; enemyIndex < enemySpawnerRO.spawnAmount; enemyIndex++)
+                var enemySpawner = enemySpawners[index];
+
+                var randomPos = random.NextFloat2Direction() * enemySpawner.spawnRadii + enemySpawner.worldPosition;
+
+                Entity instance = entityCommandBuffer.Instantiate(enemySpawner.prefab);
+
+                entityCommandBuffer.SetComponent(instance, new LocalTransform
                 {
-                    var randomPos = random.NextFloat2Direction() * enemySpawnerRO.spawnRadius + enemySpawnerRO.worldPosition;
-
-                    Entity instance = entityCommandBuffer.Instantiate(prefabBuffer[enemySpawnerRO.prefabIndex]);
-
-                    entityCommandBuffer.SetComponent(instance, new LocalTransform
-                    {
-                        Position = new float3(randomPos, 0),
-                        Rotation = quaternion.identity,
-                        Scale = 1f,
-                    });
-                }
-
-                entityCommandBuffer.SetComponentEnabled<EnemySpawner>(entity, false);
+                    Position = new float3(randomPos, 0),
+                    Rotation = quaternion.identity,
+                    Scale = 1f,
+                });
             }
+
+            spawnAmount = 0;
         }
     }
 }

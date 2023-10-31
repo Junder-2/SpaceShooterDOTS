@@ -7,16 +7,15 @@ using UnityEngine;
 
 namespace Level
 {
-    [Serializable]
-    public struct EnemyPrefab
-    {
-        public GameObject prefab;
-        public float requiredDifficulty;
-    }
-    
+    [DefaultExecutionOrder(-1)]
     public class EnemySpawnManager : MonoBehaviour
     {
-        public static EnemySpawnManager instance;
+        private static EnemySpawnManager instance;
+        public static EnemySpawnManager Instance {
+            get {
+                return instance ??= FindObjectOfType<EnemySpawnManager>();
+            }
+        }
         
         [SerializeField] private float startingDifficulty = 1f;
         [SerializeField] private float startingEnemies = 8f;
@@ -24,11 +23,7 @@ namespace Level
         [SerializeField] private float difficultyIncreasePerWave = 1f;
         [SerializeField] private float enemiesPerWave = 5f;
         [SerializeField] private float timeBetweenEnemyWaves = 5f;
-
-        [SerializeField] private float enemySpawnRadius = 5f;
-
-        [SerializeField] private EnemyPrefab[] enemyPrefabs;
-
+        
         enum EnemySpawnStage
         {
             Spawn, Wait, Delay
@@ -36,10 +31,9 @@ namespace Level
         
         private EntityManager entityManager;
         private EntityQuery enemyQuery;
-        private EntityQuery levelTagQuery;
-        private Entity[] spawnerEntities;
-
-        private EnemySpawnStage enemySpawnStage;
+        private EnemySpawnerSystem spawnerSystem;
+            
+            private EnemySpawnStage enemySpawnStage;
         private float enemySpawnTimer;
         private float currentDifficulty;
         private float currentEnemySpawnCount;
@@ -53,26 +47,11 @@ namespace Level
         {
             entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
             enemyQuery = entityManager.CreateEntityQuery(ComponentType.ReadOnly<EnemyInfo>());
-            levelTagQuery = entityManager.CreateEntityQuery(ComponentType.ReadWrite<LevelTag>()); 
+            spawnerSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<EnemySpawnerSystem>(); 
 
             enemySpawnStage = EnemySpawnStage.Delay;
             currentEnemySpawnCount = startingEnemies;
             currentDifficulty = startingDifficulty;
-            
-            spawnerEntities = new Entity[enemyPrefabs.Length];
-
-            for (int i = 0; i < enemyPrefabs.Length; i++)
-            {
-                spawnerEntities[i] = entityManager.CreateEntity(ComponentType.ReadWrite<EnemySpawner>());
-                entityManager.AddComponentData(spawnerEntities[i], new EnemySpawner
-                {
-                    prefabIndex = i,
-                    spawnRadius = enemySpawnRadius,
-                    worldPosition = (Vector2)transform.position
-                });
-                
-                entityManager.SetComponentEnabled<EnemySpawner>(spawnerEntities[i], false);
-            }
         }
 
         private void Update()
@@ -93,16 +72,10 @@ namespace Level
 
         void EnemySpawnStageSpawn()
         {
-            if(spawnerEntities == null) return;
-            
-            for (int i = 0; i < spawnerEntities.Length; i++)
-            {
-                var spawnComponent = entityManager.GetComponentData<EnemySpawner>(spawnerEntities[i]);
-                
-                spawnComponent.spawnAmount = (int)currentEnemySpawnCount;
-                entityManager.SetComponentData(spawnerEntities[i], spawnComponent);
-                entityManager.SetComponentEnabled<EnemySpawner>(spawnerEntities[i], true);
-            }
+            if(spawnerSystem == null) return;
+
+            spawnerSystem.currentDifficulty = Mathf.FloorToInt(currentDifficulty);
+            spawnerSystem.spawnAmount = Mathf.FloorToInt(currentEnemySpawnCount);
 
             enemySpawnStage = EnemySpawnStage.Wait;
         }
@@ -125,7 +98,5 @@ namespace Level
             currentEnemySpawnCount += enemiesPerWave;
             enemySpawnStage = EnemySpawnStage.Spawn;
         }
-        
-        public EnemyPrefab[] GetEnemyPrefabs() => enemyPrefabs;
     }
 }

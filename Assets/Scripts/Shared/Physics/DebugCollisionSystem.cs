@@ -1,4 +1,6 @@
-﻿using Level;
+﻿#if UNITY_EDITOR
+
+using Level;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -43,3 +45,5 @@ namespace Shared.Physics
         }
     }
 }
+
+#endif

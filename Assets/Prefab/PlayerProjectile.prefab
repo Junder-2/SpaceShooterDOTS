@@ -49,8 +49,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f695fd15f94124bc8734e18edaffa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileInitialForce: 8
-  projectileMaxSpeed: 8
+  projectileInitialForce: 10
+  projectileMaxSpeed: 10
   projectileAcceleration: 80
   projectileDeceleration: 1
 --- !u!114 &4858752411383933657
