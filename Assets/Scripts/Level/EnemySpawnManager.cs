@@ -16,6 +16,9 @@ namespace Level
                 return instance ??= FindObjectOfType<EnemySpawnManager>();
             }
         }
+
+        [SerializeField] private bool debugSpawn = false;
+        [SerializeField] private int debugSpawnAmount = 100;
         
         [SerializeField] private float startingDifficulty = 1f;
         [SerializeField] private float startingEnemies = 8f;
@@ -33,7 +36,7 @@ namespace Level
         private EntityQuery enemyQuery;
         private EnemySpawnerSystem spawnerSystem;
             
-            private EnemySpawnStage enemySpawnStage;
+        private EnemySpawnStage enemySpawnStage;
         private float enemySpawnTimer;
         private float currentDifficulty;
         private float currentEnemySpawnCount;
@@ -75,7 +78,7 @@ namespace Level
             if(spawnerSystem == null) return;
 
             spawnerSystem.currentDifficulty = Mathf.FloorToInt(currentDifficulty);
-            spawnerSystem.spawnAmount = Mathf.FloorToInt(currentEnemySpawnCount);
+            spawnerSystem.spawnAmount = debugSpawn ? debugSpawnAmount : Mathf.FloorToInt(currentEnemySpawnCount);
 
             enemySpawnStage = EnemySpawnStage.Wait;
         }

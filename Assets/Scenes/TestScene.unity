@@ -333,6 +333,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7a2b44b1ac4b778273d9319e1cc188, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugSpawn: 1
+  debugSpawnAmount: 200
   startingDifficulty: 1
   startingEnemies: 12
   difficultyIncreasePerWave: 1
