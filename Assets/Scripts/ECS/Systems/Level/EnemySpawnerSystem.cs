@@ -1,12 +1,16 @@
-﻿using ECS.Components.Level;
+﻿using System;
+using ECS.Components.Level;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using Random = Unity.Mathematics.Random;
 
 namespace ECS.Systems.Level
 {
     public partial class EnemySpawnerSystem : SystemBase
     {
+        public Action OnStartWave;
+        
         public int currentDifficulty;
         public int spawnAmount;
 
@@ -22,6 +26,8 @@ namespace ECS.Systems.Level
         {
             if(spawnAmount <= 0) return;
             
+            OnStartWave?.Invoke();
+
             var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
             var entityCommandBuffer = ecbSingleton.CreateCommandBuffer(World.Unmanaged);
 

@@ -9,6 +9,7 @@ namespace ECS.Systems.Player
     public partial class PlayerPostProcessSystem : SystemBase
     {
         public Action<float, float> OnUpdateHealth;
+        public Action OnDeath;
 
         private float lastHealth;
 
@@ -27,6 +28,7 @@ namespace ECS.Systems.Player
                 {
                     lastHealth = health.currentHealth;
                     OnUpdateHealth?.Invoke(lastHealth, health.maxHealth);
+                    if(lastHealth < 0) OnDeath?.Invoke();
                 }
             }
         }
