@@ -50,7 +50,7 @@ namespace ECS.Systems.Physics
     {
         public NativeParallelMultiHashMap<int, ColliderData>.ParallelWriter spatialCollisionMapWriter;
 
-        public void Execute(Components.Physics.BoxColliderAspect colliderAspect, Entity entity)
+        public void Execute(BoxColliderAspect colliderAspect, Entity entity)
         {
             int hashKey = EntityPhysics.GetSpatialHashMapKey(colliderAspect.LocalToWorld.Position.xy);
             spatialCollisionMapWriter.Add(hashKey, new ColliderData

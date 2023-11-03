@@ -29,11 +29,11 @@ namespace ECS.Systems.Physics
             var entityManager = state.EntityManager;
             
             foreach (var (collisionEvent, collider, entity) 
-                     in SystemAPI.Query<RefRW<CollisionEvent>, Components.Physics.BoxColliderAspect>().WithDisabled<CollisionEvent>().WithEntityAccess())
+                     in SystemAPI.Query<RefRW<CollisionEvent>, BoxColliderAspect>().WithDisabled<CollisionEvent>().WithEntityAccess())
             {
                 if (entityManager.HasComponent<BoxCollider>(collisionEvent.ValueRO.collidedEntity))
                 {
-                    var otherCollider = SystemAPI.GetAspect<Components.Physics.BoxColliderAspect>(collisionEvent.ValueRO.collidedEntity);
+                    var otherCollider = SystemAPI.GetAspect<BoxColliderAspect>(collisionEvent.ValueRO.collidedEntity);
                     var otherWorldBounds = otherCollider.GetWorldBounds();
 
                     if (collider.CheckCollision(otherWorldBounds)) continue;
@@ -69,7 +69,7 @@ namespace ECS.Systems.Physics
         public NativeParallelMultiHashMap<int, ColliderData>.ReadOnly spatialHashMap;
         public Boundary boundary;
 
-        public void Execute(ref CollisionEvent collisionEvent, Components.Physics.BoxColliderAspect collider, Entity entity)
+        public void Execute(ref CollisionEvent collisionEvent, BoxColliderAspect collider, Entity entity)
         {
             var collisionMask = collisionEvent.collisionMask;
             var cellOffsets = EntityPhysics.CellOffsets;

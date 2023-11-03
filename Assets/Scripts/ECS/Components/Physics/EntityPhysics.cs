@@ -14,8 +14,8 @@ namespace ECS.Components.Physics
         public const byte BoundaryLayer = 1 << 5;
         public const byte BlockingLayer = 1 << 6;
         
-        public const int CellSize = 2;
-        public const int CellYOffset = 16;
+        public const int CellSize = 4;
+        public const int CellYOffset = 32;
         
         public static readonly float2[] CellOffsets =
         {

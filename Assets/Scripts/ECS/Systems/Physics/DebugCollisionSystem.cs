@@ -32,7 +32,7 @@ namespace ECS.Systems.Physics
                 DrawBox(collider.GetWorldBounds(), Color.red);
             }
             
-            return;
+            //return;
 
             foreach (var player in SystemAPI.Query<global::ECS.Components.Player.PlayerInput>())
             {
