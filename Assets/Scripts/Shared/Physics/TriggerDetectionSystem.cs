@@ -1,4 +1,5 @@
 ﻿using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 
 /*  Profiler 31.10 Tested 200 enemies
@@ -7,6 +8,7 @@ using Unity.Entities;
 
 namespace Shared.Physics
 {
+    [UpdateAfter(typeof(CollisionDetectionSystem))]
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial struct TriggerDetectionSystem : ISystem
     {
@@ -36,24 +38,63 @@ namespace Shared.Physics
                 entityManager.SetComponentEnabled<TriggerEvent>(entity, true);
             }
 
-            foreach (var (triggerEvent, collider, entity) 
-                     in SystemAPI.Query<RefRW<TriggerEvent>, BoxColliderAspect>().WithEntityAccess())
+            var entityCommandBuffer = new EntityCommandBuffer(Allocator.TempJob);
+            var parallelWriter = entityCommandBuffer.AsParallelWriter();
+            var spatialHashMap = SystemAPI.GetSingleton<WorldCollisionInfo>().spatialCollisionMap;
+
+            var jobHandle = new CheckTriggerJob()
             {
-                foreach (var (otherCollider, otherEntity) in SystemAPI.Query<BoxColliderAspect>().WithEntityAccess())
+                ecb = parallelWriter,
+                spatialHashMap = spatialHashMap.AsReadOnly(),
+            }.ScheduleParallel(state.Dependency);
+            
+            jobHandle.Complete();
+            
+            entityCommandBuffer.Playback(state.EntityManager);
+            entityCommandBuffer.Dispose();
+        }
+    }
+
+    [BurstCompile]
+    public partial struct CheckTriggerJob : IJobEntity
+    {
+        public EntityCommandBuffer.ParallelWriter ecb;
+        public NativeParallelMultiHashMap<int, ColliderData>.ReadOnly spatialHashMap;
+
+        public void Execute(ref TriggerEvent triggerEvent, BoxColliderAspect collider, Entity entity)
+        {
+            var collisionMask = triggerEvent.collisionMask;
+            var cellOffsets = EntityPhysics.CellOffsets;
+            var colliderBounds = collider.GetWorldBounds();
+
+            var currentCellBounds = EntityPhysics.GetSpatialBounds(colliderBounds.xy);
+
+            for (int i = 0; i < cellOffsets.Length; i++)
+            {
+                var otherCellBounds = EntityPhysics.GetSpatialBounds(currentCellBounds.xy + cellOffsets[i]);
+
+                if (!EntityPhysics.AABBOverlap(colliderBounds, otherCellBounds)) continue;
+
+                int checkKey = EntityPhysics.GetSpatialHashMapKey(otherCellBounds.xy);
+
+                if (!spatialHashMap.TryGetFirstValue(checkKey, out var otherColliderData, out var iterator)) continue;
+                do
                 {
+                    var otherEntity = otherColliderData.entity;
+                    var otherCollider = otherColliderData.boxCollider;
+                    
                     if(entity.Index == otherEntity.Index) continue;
 
-                    var otherBox = otherCollider.BoxCollider;
+                    if(!otherCollider.raiseTriggerEvents) continue;
                     
-                    if(!otherBox.raiseTriggerEvents) continue;
-                    
-                    if(!triggerEvent.ValueRO.collisionMask.CheckLayer(otherCollider.BoxCollider.layer)) continue;
+                    if(!collisionMask.CheckLayer(otherCollider.layer)) continue;
 
-                    if (!collider.CheckCollision(otherCollider.GetWorldBounds())) continue;
+                    if (!EntityPhysics.AABBOverlap(colliderBounds, otherColliderData.worldBounds)) continue;
 
-                    triggerEvent.ValueRW.collidedEntity = otherEntity;
-                    entityManager.SetComponentEnabled<TriggerEvent>(entity, false);
-                }
+                    triggerEvent.collidedEntity = otherEntity;
+                    ecb.SetComponentEnabled<TriggerEvent>(entity.Index, entity, false);
+                    return;
+                } while (spatialHashMap.TryGetNextValue(out otherColliderData, ref iterator));
             }
         }
     }

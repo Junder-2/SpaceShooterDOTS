@@ -12,6 +12,17 @@ namespace Shared.Physics
         public const byte EnemyLayer = 1 << 3;
         public const byte ProjectileLayer = 1 << 4;
         public const byte BoundaryLayer = 1 << 5;
+        public const byte BlockingLayer = 1 << 6;
+        
+        public const int CellSize = 2;
+        public const int CellYOffset = 16;
+        
+        public static readonly float2[] CellOffsets =
+        {
+            new(-CellSize, CellSize), new(0, CellSize), new(CellSize, CellSize),
+            new(-CellSize, 0), new(0, 0), new(CellSize, 0),
+            new(-CellSize, -CellSize), new(0, -CellSize), new(-CellSize, -CellSize),
+        };
         
         [Flags]
         public enum LayerMask : byte
@@ -22,11 +33,37 @@ namespace Shared.Physics
             Enemy = EnemyLayer,
             Projectile = ProjectileLayer,
             Boundary = BoundaryLayer,
+            Blocking = BlockingLayer,
         }
         
         public static bool CheckLayer(this CollisionMask collisionMask, byte layer)
         {
             return (collisionMask.includeLayers & layer) != 0 && (collisionMask.rejectLayers & layer) == 0;
+        }
+
+        public static bool AABBOverlap(float4 bounds, float4 otherBounds)
+        {
+            var dx = otherBounds.x - bounds.x;
+            var px = (otherBounds.z + bounds.z) - math.abs(dx);
+            if (px <= 0) return false;
+
+            var dy = otherBounds.y - bounds.y;
+            var py = (otherBounds.w + bounds.w) - math.abs(dy);
+            if (py <= 0) return false;
+
+            return true;
+        }
+        
+        public static int GetSpatialHashMapKey(float2 pos)
+        {
+            return (int)(math.floor(pos.x / CellSize) + (math.floor(pos.y / CellSize) * CellYOffset));
+        }
+
+        public static float4 GetSpatialBounds(float2 pos)
+        {
+            var halfSize = CellSize / 2f;
+            return new float4(math.floor(pos.x / CellSize) * CellSize + halfSize,
+                math.floor(pos.y / CellSize) * CellSize + halfSize, halfSize, halfSize);
         }
     }
 
@@ -118,30 +155,23 @@ namespace Shared.Physics
         {
             var bounds = GetWorldBounds();
 
-            var dx = otherWorldBounds.x - bounds.x;
-            var px = (otherWorldBounds.z + bounds.z) - math.abs(dx);
-            if (px <= 0) return false;
-
-            var dy = otherWorldBounds.y - bounds.y;
-            var py = (otherWorldBounds.w + bounds.w) - math.abs(dy);
-            if (py <= 0) return false;
-
-            return true;
+            return EntityPhysics.AABBOverlap(bounds, otherWorldBounds);
         }
 
         public bool CheckInverseCollision(float4 otherWorldBounds)
         {
             var bounds = GetWorldBounds();
 
-            var dx = otherWorldBounds.x - bounds.x;
-            var px = (otherWorldBounds.z - bounds.z) - math.abs(dx);
-            if (px <= 0) return true;
+            bounds.zw *= -1f;
 
-            var dy = otherWorldBounds.y - bounds.y;
-            var py = (otherWorldBounds.w - bounds.w) - math.abs(dy);
-            if (py <= 0) return true;
-
-            return false;
+            return !EntityPhysics.AABBOverlap(bounds, otherWorldBounds);
         }
+    }
+
+    public struct ColliderData
+    {
+        public BoxCollider boxCollider;
+        public float4 worldBounds;
+        public Entity entity;
     }
 }

@@ -5,6 +5,7 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Shared.Physics
 {
@@ -29,6 +30,24 @@ namespace Shared.Physics
             {   
                 DrawBox(collider.GetWorldBounds(), Color.red);
             }
+            
+            return;
+
+            foreach (var player in SystemAPI.Query<Player.PlayerInput>())
+            {
+                DebugSpatialMap(player.mouseWorldPos.xy);
+            }
+        }
+        
+        private static void DebugSpatialMap(float2 pos)
+        {
+            var cellSize = EntityPhysics.CellSize;
+            
+            int key = (int)(math.floor(pos.x / cellSize) + (math.floor(pos.y / cellSize) * EntityPhysics.CellYOffset));
+            
+            DrawBox(new float4(math.floor(pos.x/cellSize)*cellSize + cellSize/2f, math.floor(pos.y/cellSize)*cellSize + cellSize/2f
+                , cellSize/2f, cellSize/2f), Color.green);
+            Debug.Log(key);
         }
 
         private static void DrawBox(float4 bounds, Color color)

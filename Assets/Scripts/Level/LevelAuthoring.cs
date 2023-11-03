@@ -6,13 +6,6 @@ using UnityEngine;
 
 namespace Level
 {
-    [Serializable]
-    public struct EnemyPrefab
-    {
-        public GameObject prefab;
-        public int requiredDifficulty;
-    }
-    
     public class LevelAuthoring : MonoBehaviour
     {
         [SerializeField] private Vector2 boundarySize = new Vector2(20, 30);

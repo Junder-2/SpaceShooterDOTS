@@ -1,6 +1,8 @@
 ﻿using Level;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 
 /*  Profiler 31.10 Tested 200 enemies
  *  Low: .7ms High: 4.5ms few spikes
@@ -8,6 +10,7 @@ using Unity.Entities;
 
 namespace Shared.Physics
 {
+    [UpdateAfter(typeof(CollisionGatheringSystem))]
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial struct CollisionDetectionSystem : ISystem
     {
@@ -37,41 +40,75 @@ namespace Shared.Physics
                 collisionEvent.ValueRW.collidedEntity = Entity.Null;
                 entityManager.SetComponentEnabled<CollisionEvent>(entity, true);
             }
-            
-            foreach (var (collisionEvent, collider, entity)
-                     in SystemAPI.Query<RefRW<CollisionEvent>, BoxColliderAspect>().WithEntityAccess())
-            {
-                var collisionMask = collisionEvent.ValueRO.collisionMask;
 
-                if (SystemAPI.TryGetSingleton(out Boundary boundary))
-                {
-                    if (collisionMask.CheckLayer(boundary.collisionLayer) &&
-                        collider.CheckInverseCollision(boundary.boundingRect))
-                    {
-                        collisionEvent.ValueRW.isBoundary = true;
-                        collisionEvent.ValueRW.collidedEntity = Entity.Null;
-                        entityManager.SetComponentEnabled<CollisionEvent>(entity, false);
-                        continue;
-                    }
-                }
+            var entityCommandBuffer = new EntityCommandBuffer(Allocator.TempJob);
+            var parallelWriter = entityCommandBuffer.AsParallelWriter();
+            var spatialHashMap = SystemAPI.GetSingleton<WorldCollisionInfo>().spatialCollisionMap;
+
+            var jobHandle = new CheckCollisionJob()
+            {
+                ecb = parallelWriter,
+                spatialHashMap = spatialHashMap.AsReadOnly(),
+                boundary = SystemAPI.GetSingleton<Boundary>()
+            }.ScheduleParallel(state.Dependency);
+            
+            jobHandle.Complete();
+            
+            entityCommandBuffer.Playback(entityManager);
+            entityCommandBuffer.Dispose();
+        }
+    }
+
+    [BurstCompile]
+    public partial struct CheckCollisionJob : IJobEntity
+    {
+        public EntityCommandBuffer.ParallelWriter ecb;
+        public NativeParallelMultiHashMap<int, ColliderData>.ReadOnly spatialHashMap;
+        public Boundary boundary;
+
+        public void Execute(ref CollisionEvent collisionEvent, BoxColliderAspect collider, Entity entity)
+        {
+            var collisionMask = collisionEvent.collisionMask;
+            var cellOffsets = EntityPhysics.CellOffsets;
+            var colliderBounds = collider.GetWorldBounds();
+            
+            if (collisionMask.CheckLayer(boundary.collisionLayer) && collider.CheckInverseCollision(boundary.boundingRect))
+            {
+                collisionEvent.isBoundary = true;
+                collisionEvent.collidedEntity = Entity.Null;
+                ecb.SetComponentEnabled<CollisionEvent>(entity.Index, entity, false);
+                return;
+            }
+            
+            var currentCellBounds = EntityPhysics.GetSpatialBounds(colliderBounds.xy);
+
+            for (int i = 0; i < cellOffsets.Length; i++)
+            {
+                var otherCellBounds = EntityPhysics.GetSpatialBounds(currentCellBounds.xy + cellOffsets[i]);
                 
-                foreach (var (otherCollider, otherEntity) in SystemAPI.Query<BoxColliderAspect>().WithEntityAccess())
+                if(!EntityPhysics.AABBOverlap(colliderBounds, otherCellBounds)) continue;
+                
+                int checkKey = EntityPhysics.GetSpatialHashMapKey(otherCellBounds.xy);
+
+                if (!spatialHashMap.TryGetFirstValue(checkKey, out var otherColliderData, out var iterator)) continue;
+                do
                 {
+                    var otherEntity = otherColliderData.entity;
+                    var otherCollider = otherColliderData.boxCollider;
+                    
                     if(entity.Index == otherEntity.Index) continue;
 
-                    var otherBox = otherCollider.BoxCollider;
+                    if(!otherCollider.raiseCollisionEvents) continue;
                     
-                    if(!otherBox.raiseCollisionEvents) continue;
-                    
-                    if(!collisionMask.CheckLayer(otherCollider.BoxCollider.layer)) continue;
+                    if(!collisionMask.CheckLayer(otherCollider.layer)) continue;
 
-                    if (!collider.CheckCollision(otherCollider.GetWorldBounds())) continue;
+                    if (!EntityPhysics.AABBOverlap(colliderBounds, otherColliderData.worldBounds)) continue;
 
-                    collisionEvent.ValueRW.collidedEntity = otherEntity;
-                    collisionEvent.ValueRW.isBoundary = false;
-                    entityManager.SetComponentEnabled<CollisionEvent>(entity, false);
-                    break;
-                }
+                    collisionEvent.collidedEntity = otherEntity;
+                    collisionEvent.isBoundary = false;
+                    ecb.SetComponentEnabled<CollisionEvent>(entity.Index, entity, false);
+                    return;
+                } while (spatialHashMap.TryGetNextValue(out otherColliderData, ref iterator));
             }
         }
     }

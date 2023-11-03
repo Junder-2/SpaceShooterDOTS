@@ -1,19 +1,16 @@
-﻿using System;
-using Enemy;
-using Unity.Collections;
+﻿using Enemy;
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Level
 {
     [DefaultExecutionOrder(-1)]
-    public class EnemySpawnManager : MonoBehaviour
+    public class EnemySpawnBehaviour : MonoBehaviour
     {
-        private static EnemySpawnManager instance;
-        public static EnemySpawnManager Instance {
+        private static EnemySpawnBehaviour instance;
+        public static EnemySpawnBehaviour Instance {
             get {
-                return instance ??= FindObjectOfType<EnemySpawnManager>();
+                return instance ??= FindObjectOfType<EnemySpawnBehaviour>();
             }
         }
 

@@ -1,18 +1,26 @@
-﻿using Unity.Entities;
+﻿using System;
+using Unity.Entities;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
 namespace Level
 {
-    public class SpawnerAuthoring : MonoBehaviour
+    [Serializable]
+    public struct EnemyPrefab
+    {
+        public GameObject prefab;
+        public int requiredDifficulty;
+    }
+    
+    public class EnemySpawnerAuthoring : MonoBehaviour
     {
         [SerializeField] private EnemyPrefab enemyPrefab;
         [SerializeField] private Vector2 spawnRadii = new Vector2(5f, 5f);
 
-        class Baker : Baker<SpawnerAuthoring>
+        class Baker : Baker<EnemySpawnerAuthoring>
         {
-            public override void Bake(SpawnerAuthoring authoring)
+            public override void Bake(EnemySpawnerAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
 
