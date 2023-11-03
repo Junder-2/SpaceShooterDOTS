@@ -22,6 +22,7 @@ namespace ECS.Components.Enemy
 
         [SerializeField] private float fireDelay = .1f;
 
+        [SerializeField] private bool shouldShoot = true;
         [SerializeField] private GameObject projectilePrefab;
         [SerializeField] private Transform projectileSpawn;
 
@@ -50,7 +51,7 @@ namespace ECS.Components.Enemy
                     pushForce = 4f,
                     pushRadius = 2f,
                 });
-                if (authoring.projectilePrefab != null)
+                if (authoring.shouldShoot)
                 {
                     AddComponent(entity, new Shooting
                     {
@@ -80,6 +81,9 @@ namespace ECS.Components.Enemy
     {
         private readonly RefRW<EnemyInfo> enemyInfo;
         public readonly PhysicsBodyAspect physicsBodyAspect;
+        [Optional] private readonly RefRO<Shooting> shooting;
+
+        public bool HasShooting() => shooting.IsValid;
 
         public EnemyInfo EnemyInfo
         {
@@ -92,5 +96,6 @@ namespace ECS.Components.Enemy
             get => enemyInfo.ValueRO.targetPosition;
             set => enemyInfo.ValueRW.targetPosition = value;
         }
+        
     }
 }

@@ -1,5 +1,4 @@
 ﻿using ECS.Components.Physics;
-using ECS.Systems.Physics;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;

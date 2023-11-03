@@ -172,6 +172,7 @@ MonoBehaviour:
   decelerationSpeed: 2
   rotateSpeed: 0.5
   fireDelay: 0.8
+  shouldShoot: 1
   projectilePrefab: {fileID: 3724000985595306511, guid: f65767ec9e15b664f837f25002622cf8, type: 3}
   projectileSpawn: {fileID: 4019999781159019856}
 --- !u!114 &6277536192356289154

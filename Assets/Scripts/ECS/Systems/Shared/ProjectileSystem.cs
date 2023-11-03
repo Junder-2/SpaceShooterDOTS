@@ -1,6 +1,6 @@
 ﻿using ECS.Components.Physics;
-using ECS.Systems.Physics;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace ECS.Systems.Shared
@@ -17,13 +17,18 @@ namespace ECS.Systems.Shared
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
+            var ecb = new EntityCommandBuffer(Allocator.TempJob);
 
-            new ProjectileJob
+            var job = new ProjectileJob
             {
-                entityCommandBuffer = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged),
+                entityCommandBuffer = ecb,
                 deltaTime = SystemAPI.Time.DeltaTime,
-            }.Schedule();
+            }.Schedule(state.Dependency);
+            
+            job.Complete();
+
+            ecb.Playback(state.EntityManager);
+            ecb.Dispose();
         }
     }
 

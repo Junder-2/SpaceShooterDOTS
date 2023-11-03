@@ -43,8 +43,9 @@ namespace Level
             entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
             enemyQuery = entityManager.CreateEntityQuery(ComponentType.ReadOnly<EnemyInfo>());
             spawnerSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<ECS.Systems.Level.EnemySpawnerSystem>(); 
-
+            
             enemySpawnStage = EnemySpawnStage.Delay;
+            enemySpawnTimer = 2f;
             currentEnemySpawnCount = startingEnemies;
             currentDifficulty = startingDifficulty;
         }

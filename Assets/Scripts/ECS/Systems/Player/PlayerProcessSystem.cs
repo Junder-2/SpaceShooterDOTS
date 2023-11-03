@@ -4,7 +4,6 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using PlayerAspect = ECS.Components.Player.PlayerAspect;
 
 namespace ECS.Systems.Player
 {

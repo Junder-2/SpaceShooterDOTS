@@ -5,7 +5,6 @@ using ECS.Systems.Shared;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
-using PhysicsBodyAspect = ECS.Components.Physics.PhysicsBodyAspect;
 
 namespace ECS.Components.Player
 {

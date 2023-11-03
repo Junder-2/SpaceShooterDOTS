@@ -1,5 +1,4 @@
-﻿using System;
-using ECS.Components.Player;
+﻿using ECS.Components.Player;
 using ECS.Components.Shared;
 using ECS.Systems.Level;
 using ECS.Systems.Player;

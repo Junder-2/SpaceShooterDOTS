@@ -141,6 +141,7 @@ MonoBehaviour:
   decelerationSpeed: 2
   rotateSpeed: 2
   fireDelay: 0.3
+  shouldShoot: 0
   projectilePrefab: {fileID: 0}
   projectileSpawn: {fileID: 0}
 --- !u!114 &6277536192356289154

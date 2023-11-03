@@ -1,7 +1,6 @@
 ﻿using System;
 using ECS.Components.Player;
 using Unity.Entities;
-using PlayerAspect = ECS.Components.Player.PlayerAspect;
 
 namespace ECS.Systems.Player
 {

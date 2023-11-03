@@ -6,7 +6,6 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using EnemyAspect = ECS.Components.Enemy.EnemyAspect;
 
 /*  Profiler 31.10 Tested 200 enemies
  *  Low: .013ms High: .034ms
@@ -47,8 +46,8 @@ namespace ECS.Systems.Enemy
 
                 enemy.physicsBodyAspect.FaceDirection = targetDir;
                 enemy.physicsBodyAspect.MoveVector = targetDir;
-
-                if (state.EntityManager.HasComponent<Shooting>(entity))
+                
+                if (enemy.HasShooting())
                 {
                     state.EntityManager.SetComponentEnabled<Shooting>(entity, Random.CreateFromIndex((uint)(entity.Index + (time*.5f))).NextBool());
                 }

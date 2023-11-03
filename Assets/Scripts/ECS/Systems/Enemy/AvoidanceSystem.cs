@@ -4,8 +4,6 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using PhysicsBodyAspect = ECS.Components.Physics.PhysicsBodyAspect;
-using Random = Unity.Mathematics.Random;
 
 /*  Profiler 31.10 Tested 200 enemies
  *  Low: .075ms High: .379ms few spikes

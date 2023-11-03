@@ -5,7 +5,6 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using BoxColliderAspect = ECS.Components.Physics.BoxColliderAspect;
 
 namespace ECS.Systems.Level
 {
