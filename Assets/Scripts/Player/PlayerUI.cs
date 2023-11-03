@@ -10,7 +10,7 @@ namespace Player
 
         private void OnEnable()
         {
-            var PlayerPostProcess = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<PlayerPostProcessSystem>();
+            var PlayerPostProcess = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<ECS.Systems.Player.PlayerPostProcessSystem>();
 
             PlayerPostProcess.OnUpdateHealth += UpdateHealthDisplay;
         }

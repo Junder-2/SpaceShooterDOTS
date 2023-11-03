@@ -1,4 +1,4 @@
-﻿using Enemy;
+﻿using ECS.Components.Enemy;
 using Unity.Entities;
 using UnityEngine;
 
@@ -7,12 +7,7 @@ namespace Level
     [DefaultExecutionOrder(-1)]
     public class EnemySpawnBehaviour : MonoBehaviour
     {
-        private static EnemySpawnBehaviour instance;
-        public static EnemySpawnBehaviour Instance {
-            get {
-                return instance ??= FindObjectOfType<EnemySpawnBehaviour>();
-            }
-        }
+        public static EnemySpawnBehaviour instance;
 
         [SerializeField] private bool debugSpawn = false;
         [SerializeField] private int debugSpawnAmount = 100;
@@ -31,7 +26,7 @@ namespace Level
         
         private EntityManager entityManager;
         private EntityQuery enemyQuery;
-        private EnemySpawnerSystem spawnerSystem;
+        private ECS.Systems.Level.EnemySpawnerSystem spawnerSystem;
             
         private EnemySpawnStage enemySpawnStage;
         private float enemySpawnTimer;
@@ -47,7 +42,7 @@ namespace Level
         {
             entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
             enemyQuery = entityManager.CreateEntityQuery(ComponentType.ReadOnly<EnemyInfo>());
-            spawnerSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<EnemySpawnerSystem>(); 
+            spawnerSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<ECS.Systems.Level.EnemySpawnerSystem>(); 
 
             enemySpawnStage = EnemySpawnStage.Delay;
             currentEnemySpawnCount = startingEnemies;
