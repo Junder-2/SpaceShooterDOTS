@@ -4,6 +4,9 @@ using Unity.Entities;
 
 /*  Profiler 31.10 Tested 200 enemies
  *  Low: .175ms High: .975ms few spikes
+ *
+ *  Profiler 3.11 Tested 200 enemies
+ *  Low: .02ms High: .172ms few spikes
  */
 
 namespace Shared.Physics

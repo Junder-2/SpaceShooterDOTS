@@ -2,6 +2,10 @@
 using Unity.Collections;
 using Unity.Entities;
 
+/*  Profiler 3.11 Tested 200 enemies
+ *  Low: .066ms High: .2ms few spikes
+ */
+
 namespace Shared.Physics
 {
     [RequireMatchingQueriesForUpdate]
