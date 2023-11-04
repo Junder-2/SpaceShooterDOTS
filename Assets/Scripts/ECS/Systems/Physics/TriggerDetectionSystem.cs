@@ -68,14 +68,13 @@ namespace ECS.Systems.Physics
         public void Execute(ref TriggerEvent triggerEvent, Components.Physics.BoxColliderAspect collider, Entity entity)
         {
             var collisionMask = triggerEvent.collisionMask;
-            var cellOffsets = EntityPhysics.CellOffsets;
             var colliderBounds = collider.GetWorldBounds();
 
             var currentCellBounds = EntityPhysics.GetSpatialBounds(colliderBounds.xy);
 
-            for (int i = 0; i < cellOffsets.Length; i++)
+            for (int i = 0; i < EntityPhysics.CellOffsetLength; i++)
             {
-                var otherCellBounds = EntityPhysics.GetSpatialBounds(currentCellBounds.xy + cellOffsets[i]);
+                var otherCellBounds = EntityPhysics.GetSpatialBounds(currentCellBounds.xy + EntityPhysics.GetCellOffset(i));
 
                 if (!EntityPhysics.AABBOverlap(colliderBounds, otherCellBounds)) continue;
 

@@ -72,7 +72,6 @@ namespace ECS.Systems.Physics
         public void Execute(ref CollisionEvent collisionEvent, BoxColliderAspect collider, Entity entity)
         {
             var collisionMask = collisionEvent.collisionMask;
-            var cellOffsets = EntityPhysics.CellOffsets;
             var colliderBounds = collider.GetWorldBounds();
             
             if (collisionMask.CheckLayer(boundary.collisionLayer) && collider.CheckInverseCollision(boundary.boundingRect))
@@ -85,9 +84,9 @@ namespace ECS.Systems.Physics
             
             var currentCellBounds = EntityPhysics.GetSpatialBounds(colliderBounds.xy);
 
-            for (int i = 0; i < cellOffsets.Length; i++)
+            for (int i = 0; i < EntityPhysics.CellOffsetLength; i++)
             {
-                var otherCellBounds = EntityPhysics.GetSpatialBounds(currentCellBounds.xy + cellOffsets[i]);
+                var otherCellBounds = EntityPhysics.GetSpatialBounds(currentCellBounds.xy + EntityPhysics.GetCellOffset(i));
                 
                 if(!EntityPhysics.AABBOverlap(colliderBounds, otherCellBounds)) continue;
                 

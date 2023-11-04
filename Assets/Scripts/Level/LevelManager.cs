@@ -42,6 +42,16 @@ namespace Level
             {
                 RestartLevel();
             }
+
+            if (Input.GetKeyUp(KeyCode.I))
+            {
+                restartOnDeath = !restartOnDeath;
+            }
+
+            if (Input.GetKeyUp(KeyCode.F))
+            {
+                Screen.fullScreen = !Screen.fullScreen;
+            }
         }
         
         private void HealPlayer()

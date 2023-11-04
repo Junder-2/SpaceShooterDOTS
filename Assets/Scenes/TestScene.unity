@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3536aab5f874b0ab2ee9b80fad59919, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restartOnDeath: 0
+  restartOnDeath: 1
 --- !u!4 &791342949
 Transform:
   m_ObjectHideFlags: 0
@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7a2b44b1ac4b778273d9319e1cc188, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugSpawn: 1
+  debugSpawn: 0
   debugSpawnAmount: 200
   startingDifficulty: 1
   startingEnemies: 12

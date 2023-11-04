@@ -14,16 +14,20 @@ namespace ECS.Components.Physics
         public const byte BoundaryLayer = 1 << 5;
         public const byte BlockingLayer = 1 << 6;
         
-        public const int CellSize = 4;
-        public const int CellYOffset = 32;
-        
-        public static readonly float2[] CellOffsets =
-        {
-            new(-CellSize, CellSize), new(0, CellSize), new(CellSize, CellSize),
-            new(-CellSize, 0), new(0, 0), new(CellSize, 0),
-            new(-CellSize, -CellSize), new(0, -CellSize), new(-CellSize, -CellSize),
-        };
-        
+        public const int CellSize = 2;
+        public const int CellYOffset = 64;
+
+        public const int CellOffsetLength = 9;
+        public static readonly float2 CellOffset0 = new(-CellSize, CellSize);
+        public static readonly float2 CellOffset1 = new(0, CellSize);
+        public static readonly float2 CellOffset2 = new(CellSize, CellSize);
+        public static readonly float2 CellOffset3 = new(-CellSize, 0);
+        public static readonly float2 CellOffset4 = new(0, 0);
+        public static readonly float2 CellOffset5 = new(CellSize, 0);
+        public static readonly float2 CellOffset6 = new(-CellSize, -CellSize);
+        public static readonly float2 CellOffset7 = new(0, -CellSize);
+        public static readonly float2 CellOffset8 = new(CellSize, -CellSize);
+
         [Flags]
         public enum LayerMask : byte
         {
@@ -64,6 +68,23 @@ namespace ECS.Components.Physics
             var halfSize = CellSize / 2f;
             return new float4(math.floor(pos.x / CellSize) * CellSize + halfSize,
                 math.floor(pos.y / CellSize) * CellSize + halfSize, halfSize, halfSize);
+        }
+
+        public static float2 GetCellOffset(int index)
+        {
+            return index switch
+            {
+                0 => CellOffset0,
+                1 => CellOffset1,
+                2 => CellOffset2,
+                3 => CellOffset3,
+                4 => CellOffset4,
+                5 => CellOffset5,
+                6 => CellOffset6,
+                7 => CellOffset7,
+                8 => CellOffset8,
+                _ => float2.zero
+            };
         }
     }
 

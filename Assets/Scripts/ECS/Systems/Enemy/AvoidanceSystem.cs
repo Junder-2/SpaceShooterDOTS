@@ -7,6 +7,8 @@ using Unity.Transforms;
 
 /*  Profiler 31.10 Tested 200 enemies
  *  Low: .075ms High: .379ms few spikes
+ *  Profiler 4.11 Tested 200 enemies
+ *  Low: .062ms High: .62ms
  */
 
 namespace ECS.Systems.Enemy
@@ -74,12 +76,12 @@ namespace ECS.Systems.Enemy
         {
             float2 pushForce = float2.zero;
             
-            var cellOffsets = EntityPhysics.CellOffsets;
+            //var cellOffsets = EntityPhysics.CellOffsets;
             var rand = Random.CreateFromIndex((uint)entity.Index);
             
-            for (int i = 0; i < cellOffsets.Length; i++)
+            for (int i = 0; i < EntityPhysics.CellOffsetLength; i++)
             {
-                int checkKey = EntityPhysics.GetSpatialHashMapKey(localToWorld.Position.xy + cellOffsets[i]);
+                int checkKey = EntityPhysics.GetSpatialHashMapKey(localToWorld.Position.xy + EntityPhysics.GetCellOffset(i));
 
                 if (!spatialMap.TryGetFirstValue(checkKey, out var otherEntityData, out var iterator)) continue;
                 do
