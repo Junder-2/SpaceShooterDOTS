@@ -24,3 +24,7 @@ Doing this allowed me to reduced my collision checks from being two systems that
 and .02ms to .172ms for the TriggerDetectionSystem.
 
 I also attempted doing this to the AvoidanceSystem for the enemies but failed to see an improvement. My guesses are that either my profiler test for that system was flawed or there weren't enough enemies in the game to see a benefit.
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=UUxCs_AvYEs
+" target="_blank"><img src="http://img.youtube.com/vi/UUxCs_AvYEs/0.jpg" 
+alt="Demo" width="320" height="213" border="1" /></a>
